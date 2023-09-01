@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
-
+import { Navigate, Route, Routes } from "react-router-dom";
+import Auth from "./components/auth/Auth";
+import { Suspense, createContext, useState } from "react";
+import Panel from "./components/panel/Panel";
+// Create a context
+export const CartContext = createContext();
 function App() {
+  // State for cartArr
+  const [cartArr, setCartArr] = useState([]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <CartContext.Provider value={{ cartArr, setCartArr }}>
+        <Routes>
+          <Route
+            path="/auth/*"
+            element={
+              <Suspense fallback={<></>}>
+                <Auth />
+              </Suspense>
+            }
+          ></Route>
+          <Route path="*" element={<Navigate to={"/auth/login"} />} />
+          <Route
+            path="/panel/*"
+            element={
+              <Suspense fallback={<></>}>
+                <Panel />
+              </Suspense>
+            }
+          ></Route>
+        </Routes>
+      </CartContext.Provider>
     </div>
   );
 }
